@@ -100,7 +100,7 @@ Please evaluate whether this request (including any attached screenshots) contai
 Please evaluate whether this request contains enough context to generate a high-quality prompt. Return your response as valid JSON.`;
 
     const message = await client.messages.create({
-      model: hasImages ? 'claude-sonnet-4-5-20250929' : 'claude-haiku-4-5-20251001',
+      model: 'claude-sonnet-4-6',
       max_tokens: 1024,
       system: SYSTEM_PROMPT,
       messages: [

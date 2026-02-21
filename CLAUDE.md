@@ -12,8 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Runtime**: Node.js
 - **Styling**: Tailwind CSS 4 with @tailwindcss/typography
 - **LLM Integration**: Anthropic Claude API (`@anthropic-ai/sdk`)
-  - Sonnet 4.5: `claude-sonnet-4-5-20250929` (main generation)
-  - Haiku 4.5: `claude-haiku-4-5-20251001` (context evaluation)
+  - Sonnet 4.6: `claude-sonnet-4-6` (both generation and context evaluation)
 - **Icons**: Lucide React
 - **Testing**: Jest with React Testing Library
 - **React**: 19.2.3 with functional components and hooks
@@ -86,14 +85,14 @@ The application is built around 7 categories of prompt building blocks:
 
 #### POST /api/evaluate-context
 - **Purpose**: Evaluates user intent and generates clarifying questions
-- **Model**: `claude-haiku-4-5-20251001` (text) or `claude-sonnet-4-5-20250929` (with images)
+- **Model**: `claude-sonnet-4-6`
 - **Input**: `{ userIntent: string, images?: ImageAttachment[] }`
 - **Output**: `{ sufficient: boolean, reasoning: string, questions?: ClarifyingQuestion[] }`
 - **Timeout**: Browser default (~60s)
 
 #### POST /api/generate-prompt
 - **Purpose**: Generates structured prompts from intent + answers
-- **Model**: `claude-sonnet-4-5-20250929`
+- **Model**: `claude-sonnet-4-6`
 - **Max Tokens**: 4096 (optimized for speed)
 - **Input**: `{ userIntent: string, clarifyingAnswers?: ClarifyingAnswer[], images?: ImageAttachment[] }`
 - **Output**: `{ prompt: string, selectedBlocks: Block[], reasoning: string }`
@@ -195,9 +194,7 @@ TypeScript configured with `@/*` alias mapping to `./src/*`
 
 ### Model 404 Errors
 **Problem**: API returns 404 for model
-**Solution**: Ensure using current model IDs:
-- `claude-sonnet-4-5-20250929` (not `claude-3-5-sonnet-20241022`)
-- `claude-haiku-4-5-20251001` (not `claude-3-haiku-20240307`)
+**Solution**: Ensure using current model ID: `claude-sonnet-4-6`
 
 ### JSON Parsing Failures
 **Problem**: "Failed to parse evaluation response"
