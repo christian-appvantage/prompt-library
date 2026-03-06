@@ -132,7 +132,7 @@ export default function PromptOutput({ prompt, selectedBlocks, reasoning, userIn
         // Inline code - check for placeholders
         const parts = content.split(/(\[[^\]]+\])/);
         return (
-          <code {...props} className="bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded text-sm font-mono">
+          <code {...props} className="bg-gray-100 text-black px-1.5 py-0.5 rounded text-sm font-mono">
             {parts.map((part, i) => {
               if (part.startsWith('[') && part.endsWith(']')) {
                 return (
@@ -158,13 +158,13 @@ export default function PromptOutput({ prompt, selectedBlocks, reasoning, userIn
       return <pre className="mb-4">{children}</pre>;
     },
     h1: ({ children }: React.HTMLAttributes<HTMLHeadingElement>) => (
-      <h1 className="text-2xl font-bold mb-4 text-slate-900">{children}</h1>
+      <h1 className="text-2xl font-light mb-4 text-black">{children}</h1>
     ),
     h2: ({ children }: React.HTMLAttributes<HTMLHeadingElement>) => (
-      <h2 className="text-xl font-bold mb-3 text-slate-800">{children}</h2>
+      <h2 className="text-xl font-light mb-3 text-black">{children}</h2>
     ),
     h3: ({ children }: React.HTMLAttributes<HTMLHeadingElement>) => (
-      <h3 className="text-lg font-bold mb-2 text-slate-800">{children}</h3>
+      <h3 className="text-lg font-light mb-2 text-black">{children}</h3>
     ),
     ul: ({ children }: React.HTMLAttributes<HTMLUListElement>) => (
       <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>
@@ -182,7 +182,7 @@ export default function PromptOutput({ prompt, selectedBlocks, reasoning, userIn
     ),
     hr: () => <hr className="my-6 border-slate-300" />,
     strong: ({ children }: React.HTMLAttributes<HTMLElement>) => (
-      <strong className="font-bold text-slate-900">{children}</strong>
+      <strong className="font-bold text-black">{children}</strong>
     ),
     em: ({ children }: React.HTMLAttributes<HTMLElement>) => (
       <em className="italic">{children}</em>
@@ -206,19 +206,19 @@ export default function PromptOutput({ prompt, selectedBlocks, reasoning, userIn
     >
       <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col animate-scale-up">
         {/* Header */}
-        <div className="p-6 bg-gradient-to-r from-blue-600 to-pink-600 rounded-t-3xl flex items-center justify-between">
+        <div className="p-6 bg-[#E60000] rounded-t-3xl flex items-center justify-between">
           <div>
-            <h2 id="prompt-output-title" className="font-bold text-xl text-white">
+            <h2 id="prompt-output-title" className="font-light text-xl text-white">
               Your Generated Prompt
             </h2>
-            <p className="text-sm text-blue-100">
+            <p className="text-sm text-white/70">
               {selectedBlocks.length} building blocks assembled
             </p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handleFavoriteToggle}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all shadow-md ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-light transition-all shadow-md ${
                 isFavorite
                   ? 'bg-red-500 hover:bg-red-600 text-white'
                   : 'bg-white/20 hover:bg-white/30 text-white'
@@ -276,20 +276,20 @@ export default function PromptOutput({ prompt, selectedBlocks, reasoning, userIn
         {/* Content */}
         <div className="flex-1 overflow-auto p-8">
           {/* Blocks used indicator */}
-          <div className="mb-6 p-4 bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-200 rounded-2xl">
-            <p className="text-sm font-bold text-blue-900 mb-3 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-blue-500" />
+          <div className="mb-6 p-4 bg-[#E60000]/5 border border-[#E60000]/20 rounded-2xl">
+            <p className="text-sm font-light text-black mb-3 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#E60000]" />
               Building Blocks Used:
             </p>
             <div className="flex flex-wrap gap-3" role="list" aria-label="TCWEI blocks used">
               {Object.entries(blocksByCategory).map(([category, blocks]) => (
                 <div key={category} className="flex items-center gap-2 bg-white/60 rounded-xl px-3 py-2">
-                  <span className="text-xs font-semibold text-slate-600">{category}:</span>
+                  <span className="text-xs font-light text-[#808080]">{category}:</span>
                   <div className="flex gap-1">
                     {blocks.map((block) => (
                       <span
                         key={block.id}
-                        className="px-2 py-1 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-lg text-xs font-bold shadow-sm"
+                        className="px-2 py-1 bg-[#E60000] text-white rounded-lg text-xs font-bold shadow-sm"
                         role="listitem"
                         title={block.title}
                       >
@@ -307,11 +307,11 @@ export default function PromptOutput({ prompt, selectedBlocks, reasoning, userIn
             <div className="mb-6">
               <button
                 onClick={() => setShowReasoning(!showReasoning)}
-                className="flex items-center gap-2 px-4 py-3 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-xl w-full text-left transition-all font-medium text-yellow-900"
+                className="flex items-center gap-2 px-4 py-3 bg-gray-50 hover:bg-gray-100 border border-[#E8E8E8] rounded-xl w-full text-left transition-all font-light text-black"
                 aria-expanded={showReasoning}
                 aria-controls="reasoning-content"
               >
-                <Lightbulb className="w-5 h-5 text-yellow-600" />
+                <Lightbulb className="w-5 h-5 text-[#808080]" />
                 <span className="flex-1">Why these blocks were selected</span>
                 {showReasoning ? (
                   <ChevronUp className="w-5 h-5" />
@@ -322,7 +322,7 @@ export default function PromptOutput({ prompt, selectedBlocks, reasoning, userIn
               {showReasoning && (
                 <div
                   id="reasoning-content"
-                  className="mt-3 p-4 bg-white border-2 border-yellow-200 rounded-xl text-sm text-slate-700 leading-relaxed animate-fade-in"
+                  className="mt-3 p-4 bg-white border border-[#E8E8E8] rounded-xl text-sm text-black leading-relaxed animate-fade-in"
                 >
                   {reasoning}
                 </div>
@@ -345,7 +345,7 @@ export default function PromptOutput({ prompt, selectedBlocks, reasoning, userIn
           {!showPlaceholderForm && (
             <>
               <div
-                className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-8 prose prose-slate max-w-none border-2 border-slate-200 shadow-inner"
+                className="bg-gray-50 rounded-2xl p-8 prose prose-slate max-w-none border border-[#E8E8E8] shadow-inner"
                 role="article"
                 aria-label="Generated prompt content"
               >
@@ -378,10 +378,10 @@ export default function PromptOutput({ prompt, selectedBlocks, reasoning, userIn
               {/* Success message if no placeholders */}
               {!hasPlaceholders(finalPrompt) && (
                 <div
-                  className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl"
+                  className="mt-6 p-4 bg-gray-50 border border-[#E8E8E8] rounded-2xl"
                   role="status"
                 >
-                  <p className="text-sm text-green-900 font-medium">
+                  <p className="text-sm text-black font-light">
                     <strong>✅ Ready to use:</strong> Your prompt is complete and ready to copy-paste!
                   </p>
                 </div>

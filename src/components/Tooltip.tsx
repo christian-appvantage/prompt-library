@@ -62,7 +62,7 @@ export default function Tooltip({ content, children, position = 'top', asSpan = 
     : {
         ref: buttonRef,
         type: "button" as const,
-        className: "inline-flex items-center justify-center p-1 rounded-full hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500",
+        className: "inline-flex items-center justify-center p-1 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-[#E60000]",
         onMouseEnter: showTooltip,
         onMouseLeave: hideTooltip,
         onFocus: () => {

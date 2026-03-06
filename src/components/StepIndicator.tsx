@@ -43,11 +43,11 @@ export default function StepIndicator({ currentStep, totalQuestions, currentQues
               {/* Step circle + label */}
               <div className="flex flex-col items-center">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-light transition-all duration-300 ${
                     state === 'active'
-                      ? 'bg-[#E91E8C] text-white shadow-lg shadow-[#E91E8C]/30 scale-110'
+                      ? 'bg-[#E60000] text-white shadow-lg shadow-[#E60000]/30 scale-110'
                       : state === 'completed'
-                        ? 'bg-[#E91E8C] text-white'
+                        ? 'bg-[#E60000] text-white'
                         : 'bg-slate-200 text-slate-400'
                   }`}
                 >
@@ -58,9 +58,9 @@ export default function StepIndicator({ currentStep, totalQuestions, currentQues
                   )}
                 </div>
                 <span
-                  className={`text-xs mt-1.5 font-medium transition-colors duration-300 ${
+                  className={`text-xs mt-1.5 font-light transition-colors duration-300 ${
                     state === 'active'
-                      ? 'text-[#E91E8C]'
+                      ? 'text-[#E60000]'
                       : state === 'completed'
                         ? 'text-slate-600'
                         : 'text-slate-400'
@@ -71,7 +71,7 @@ export default function StepIndicator({ currentStep, totalQuestions, currentQues
 
                 {/* Question progress sub-text */}
                 {step.key === 'clarifying' && currentStep === 'clarifying' && totalQuestions && currentQuestionIndex !== undefined && (
-                  <span className="text-[10px] text-[#E91E8C] font-medium mt-0.5">
+                  <span className="text-[10px] text-[#E60000] font-medium mt-0.5">
                     {currentQuestionIndex + 1} of {totalQuestions}
                   </span>
                 )}
@@ -81,7 +81,7 @@ export default function StepIndicator({ currentStep, totalQuestions, currentQues
               {idx < STEPS.length - 1 && (
                 <div
                   className={`w-16 h-0.5 mx-2 mb-5 transition-colors duration-300 ${
-                    state === 'completed' ? 'bg-[#E91E8C]/60' : 'bg-slate-200'
+                    state === 'completed' ? 'bg-[#E60000]/60' : 'bg-slate-200'
                   }`}
                 />
               )}

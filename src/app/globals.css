@@ -1,27 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Fragment+Mono:ital@0;1&display=swap');
+/* Acumin Pro - self-hosted (place .woff2 in /public/fonts/) */
+@font-face {
+  font-family: 'Acumin Pro';
+  src: url('/fonts/AcuminPro-Light.woff2') format('woff2'),
+       url('/fonts/AcuminPro-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 :root {
-  /* Appvantage Brand Colors */
-  --color-navy: #181818;
-  --color-blue: #4f87ff;
-  --color-pink: #e6035f;
-  --color-yellow: #ffae17;
-  --color-green: #2fb77e;
-  --color-gray-light: #e6e6e6;
+  /* Brand Colors */
+  --color-pink: #E60000;
+  --color-chevron-grey: #a5a9ab;
+  --color-tagline-grey: #808080;
+  --color-border: #E8E8E8;
+  --color-muted: #595959;
   --color-white: #fff;
   --color-error: #ee4444;
 
-  /* Legacy (for compatibility) */
+  /* Canvas */
   --background: #ffffff;
-  --foreground: #181818;
-  --brand-magenta: #e6035f;
+  --foreground: #000000;
 
   /* Typography */
-  --font-primary: 'Instrument Sans', 'Inter', system-ui, -apple-system, sans-serif;
-  --font-secondary: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'Fragment Mono', 'JetBrains Mono', 'Fira Code', monospace;
+  --font-primary: 'Acumin Pro', Calibri, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
 }
 
 @theme inline {
@@ -35,6 +41,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-primary);
+  font-weight: 300;
   font-size: 16px;
   line-height: 1.6;
   letter-spacing: -0.01em;
@@ -115,16 +122,16 @@ body {
   color: white;
   border-radius: 30px;
   padding: 12px 24px;
-  font-weight: 600;
+  font-weight: 300;
   transition: all 0.2s ease;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(230, 3, 95, 0.2);
+  box-shadow: 0 4px 12px rgba(230, 0, 0, 0.2);
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(230, 3, 95, 0.3);
+  box-shadow: 0 8px 16px rgba(230, 0, 0, 0.3);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -137,20 +144,20 @@ body {
 }
 
 .btn-secondary {
-  background: var(--color-blue);
-  color: white;
+  background: transparent;
+  color: var(--color-pink);
   border-radius: 30px;
   padding: 12px 24px;
-  font-weight: 600;
+  font-weight: 300;
   transition: all 0.2s ease;
-  border: none;
+  border: 2px solid var(--color-pink);
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(79, 135, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(230, 0, 0, 0.2);
 }
 
 .btn-secondary:hover:not(:disabled) {
   transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(79, 135, 255, 0.3);
+  box-shadow: 0 8px 16px rgba(230, 0, 0, 0.3);
 }
 
 /* Card hover effects */
@@ -165,14 +172,14 @@ body {
 
 /* Focus styles for accessibility */
 *:focus-visible {
-  outline: 2px solid var(--color-blue);
+  outline: 2px solid var(--color-pink);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--color-blue);
+  outline: 2px solid var(--color-pink);
   outline-offset: 2px;
 }
 
@@ -185,7 +192,7 @@ a:focus-visible {
 }
 
 .glass-dark {
-  background: rgba(24, 24, 24, 0.8);
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);

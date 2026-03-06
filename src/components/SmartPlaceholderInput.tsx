@@ -71,7 +71,7 @@ export default function SmartPlaceholderInput({
                   onClick={() => handleChipClick(example)}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                     isSelected
-                      ? 'bg-[#E91E8C] text-white shadow-md shadow-[#E91E8C]/25'
+                      ? 'bg-[#E60000] text-white shadow-md shadow-[#E60000]/25'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300'
                   }`}
                 >
@@ -86,7 +86,7 @@ export default function SmartPlaceholderInput({
       {/* Previously Used (History) Chips */}
       {uniqueHistory.length > 0 && (
         <div className="space-y-1.5">
-          <p className="text-xs font-medium text-blue-600 flex items-center gap-1">
+          <p className="text-xs font-light text-[#808080] flex items-center gap-1">
             <History className="w-3 h-3" />
             Previously used:
           </p>
@@ -98,10 +98,10 @@ export default function SmartPlaceholderInput({
                   key={idx}
                   type="button"
                   onClick={() => handleChipClick(historyValue)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-full text-sm font-light transition-all ${
                     isSelected
-                      ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25'
-                      : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-300'
+                      ? 'bg-[#808080] text-white shadow-md shadow-[#808080]/25'
+                      : 'bg-gray-50 text-[#595959] hover:bg-gray-100 border border-[#E8E8E8]'
                   }`}
                 >
                   {historyValue}
@@ -124,7 +124,7 @@ export default function SmartPlaceholderInput({
           placeholder={`Enter ${label.toLowerCase()} (optional)`}
           autoFocus={autoFocus}
           list={`suggestions-${placeholder.key}`}
-          className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent text-slate-700 placeholder:text-slate-400"
+          className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E60000] focus:border-transparent text-slate-700 placeholder:text-slate-400"
         />
         {/* Autocomplete suggestions from history and examples */}
         {(history.length > 0 || placeholder.examples.length > 0) && (
@@ -161,7 +161,7 @@ function SelectInput({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       autoFocus={autoFocus}
-      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent text-slate-700 bg-white"
+      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E60000] focus:border-transparent text-slate-700 bg-white"
     >
       <option value="">Select {label.toLowerCase()}...</option>
       {options.map((option, idx) => (
@@ -191,7 +191,7 @@ function DateInput({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       autoFocus={autoFocus}
-      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent text-slate-700"
+      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E60000] focus:border-transparent text-slate-700"
     />
   );
 }
@@ -215,7 +215,7 @@ function NumberInput({
       onChange={(e) => onChange(e.target.value)}
       placeholder={`Enter ${label.toLowerCase()} (optional)`}
       autoFocus={autoFocus}
-      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent text-slate-700 placeholder:text-slate-400"
+      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E60000] focus:border-transparent text-slate-700 placeholder:text-slate-400"
     />
   );
 }

@@ -49,8 +49,15 @@ prompt-library/
 │   │   └── blocks.ts                # Data access utilities
 │   ├── types/
 │   │   └── index.ts                 # TypeScript definitions
-│   └── hooks/
-│       └── useKeyboardShortcuts.ts  # Keyboard shortcut handling
+│   ├── hooks/
+│   │   └── useKeyboardShortcuts.ts  # Keyboard shortcut handling
+│   └── utils/
+│       ├── debounce.ts              # Debounce utility
+│       ├── downloadPrompt.ts        # Export prompts to file
+│       ├── favoritesManager.ts      # LocalStorage favorites management
+│       ├── placeholderHistory.ts    # Placeholder value persistence
+│       ├── placeholderParser.ts     # [PLACEHOLDER] extraction/highlighting
+│       └── placeholderTypeDetector.ts # Detect placeholder value types
 └── __tests__/                       # Jest tests (not actively used)
 ```
 
@@ -166,6 +173,15 @@ TypeScript configured with `@/*` alias mapping to `./src/*`
 - **Preview Display**: Thumbnail grid with hover-to-remove functionality
 - **Cleanup**: Images cleared on "Start Over" or successful submission
 
+### Utility Features
+- **Favorites**: LocalStorage-based prompt bookmarking (`favoritesManager.ts`)
+- **Download**: Export generated prompts to text files (`downloadPrompt.ts`)
+- **Placeholder Management**: Parse, highlight, and persist placeholder values across sessions
+  - `placeholderParser.ts`: Extract `[PLACEHOLDER]` patterns from prompts
+  - `placeholderTypeDetector.ts`: Infer placeholder value types
+  - `placeholderHistory.ts`: LocalStorage persistence for user-filled values
+- **Debounce**: General-purpose debounce utility for input handling
+
 ### Component Patterns
 - **Tooltip Component**: Supports `asSpan` prop to avoid nested buttons (use when tooltip is inside another button)
 - **Error Handling**: User-friendly messages, temporary display with auto-dismiss
@@ -234,10 +250,10 @@ TypeScript configured with `@/*` alias mapping to `./src/*`
 
 ## Brand & Styling
 
-- **Primary Color**: `#E91E8C` (pink) - used for CTAs, accents, selections
+- **Primary Color**: `#E60000` (E.ON red) - used for CTAs, accents, selections
 - **Secondary**: Blue (#3B82F6) for interactive elements
 - **Neutrals**: Slate grays for text and borders
-- **Brand Name**: "appvantage>" (styled: app + vantage in pink + blue arrow)
+- **Brand Name**: "Prompt Library" (generic, no company branding)
 - **Framework**: "TCWEI Framework" - always capitalized
 
 ## Important Notes

@@ -175,34 +175,32 @@ export default function PromptLibrary() {
   const IconComponent = iconMap[cat.icon] || FileText;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* TCWEI Intro Modal */}
       {showIntroModal && <TCWEIIntroModal onClose={handleCloseIntroModal} />}
 
       {/* Header - Redesigned with Appvantage brand */}
-      <header className="sticky top-0 z-40 bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700 px-4 md:px-6 py-4 shadow-xl backdrop-blur-lg">
+      <header className="sticky top-0 z-40 bg-white border-b border-[#E8E8E8] px-4 md:px-6 py-4 shadow-sm">
         <div className="flex items-center justify-between max-w-7xl mx-auto gap-4">
           <div className="flex items-center gap-3 md:gap-4">
             {/* Mobile menu button */}
             {mode === 'manual' && (
               <button
                 onClick={() => setShowMobileSidebar(!showMobileSidebar)}
-                className="lg:hidden p-2 hover:bg-slate-700 rounded-lg transition-colors"
+                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 aria-label="Toggle categories menu"
               >
-                <Menu className="w-6 h-6 text-white" />
+                <Menu className="w-6 h-6 text-black" />
               </button>
             )}
 
-            <h1 className="text-xl md:text-2xl font-bold">
-              <span className="text-white">app</span>
-              <span className="text-pink-500">vantage</span>
-              <span className="text-blue-400">&gt;</span>
+            <h1 className="text-xl md:text-2xl font-light text-black">
+              Prompt Library
             </h1>
-            <div className="hidden sm:block h-6 w-px bg-slate-600" />
+            <div className="hidden sm:block h-6 w-px bg-[#E8E8E8]" />
             <div className="hidden sm:block">
-              <span className="text-base md:text-lg text-white font-semibold">Prompt Library</span>
-              <p className="text-xs text-slate-400 hidden md:block">Powered by TCWEI Framework</p>
+              <span className="text-base md:text-lg text-black font-light">Prompt Library</span>
+              <p className="text-xs text-[#808080] hidden md:block">Powered by TCWEI Framework</p>
             </div>
           </div>
 
@@ -215,28 +213,28 @@ export default function PromptLibrary() {
                 // Update count when opening (in case changed in current tab)
                 setFavoritesCount(getFavoritesCount());
               }}
-              className="relative flex items-center gap-2 px-3 md:px-4 py-2 bg-slate-700/50 hover:bg-slate-700 text-white rounded-lg border border-slate-600 transition-all min-h-[44px]"
+              className="relative flex items-center gap-2 px-3 md:px-4 py-2 bg-white hover:bg-gray-50 text-black rounded-lg border border-[#E8E8E8] transition-all min-h-[44px]"
               aria-label={`View favorites (${favoritesCount} saved)`}
             >
-              <Heart className={`w-4 h-4 ${favoritesCount > 0 ? 'fill-current text-pink-400' : 'text-slate-300'}`} />
-              <span className="hidden sm:inline text-sm font-medium">Favorites</span>
+              <Heart className={`w-4 h-4 ${favoritesCount > 0 ? 'fill-current text-[#E60000]' : 'text-[#808080]'}`} />
+              <span className="hidden sm:inline text-sm font-light">Favorites</span>
               {favoritesCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg">
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#E60000] text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg">
                   {favoritesCount > 99 ? '99+' : favoritesCount}
                 </span>
               )}
             </button>
 
-            <div className="relative flex items-center bg-slate-700/50 p-1 rounded-full border border-slate-600">
+            <div className="relative flex items-center bg-gray-100 p-1 rounded-full border border-[#E8E8E8]">
               <div
-                className={`absolute top-1 bottom-1 bg-blue-500 rounded-full transition-all duration-300 ease-out ${
+                className={`absolute top-1 bottom-1 bg-[#E60000] rounded-full transition-all duration-300 ease-out ${
                   mode === 'ai' ? 'left-1 right-[50%]' : 'left-[50%] right-1'
                 }`}
               />
               <button
                 onClick={() => setMode('ai')}
-                className={`relative z-10 px-3 md:px-6 py-2 rounded-full text-xs md:text-sm font-semibold transition-all min-h-[44px] ${
-                  mode === 'ai' ? 'text-white' : 'text-slate-300 hover:text-white'
+                className={`relative z-10 px-3 md:px-6 py-2 rounded-full text-xs md:text-sm font-light transition-all min-h-[44px] ${
+                  mode === 'ai' ? 'text-white' : 'text-[#808080] hover:text-black'
                 }`}
                 aria-label="Switch to AI Mode"
               >
@@ -251,8 +249,8 @@ export default function PromptLibrary() {
               </button>
               <button
                 onClick={() => setMode('manual')}
-                className={`relative z-10 px-3 md:px-6 py-2 rounded-full text-xs md:text-sm font-semibold transition-all min-h-[44px] ${
-                  mode === 'manual' ? 'text-white' : 'text-slate-300 hover:text-white'
+                className={`relative z-10 px-3 md:px-6 py-2 rounded-full text-xs md:text-sm font-light transition-all min-h-[44px] ${
+                  mode === 'manual' ? 'text-white' : 'text-[#808080] hover:text-black'
                 }`}
                 aria-label="Switch to Manual Mode"
               >
@@ -293,7 +291,7 @@ export default function PromptLibrary() {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-slate-500">
-              Or switch to <button onClick={() => setMode('manual')} className="text-[#E91E8C] hover:underline font-medium">Manual Mode</button> to select blocks yourself
+              Or switch to <button onClick={() => setMode('manual')} className="text-[#E60000] hover:underline font-light">Manual Mode</button> to select blocks yourself
             </p>
           </div>
         </div>
@@ -313,7 +311,7 @@ export default function PromptLibrary() {
 
           {/* Sidebar - Categories */}
           <nav
-            className={`fixed lg:static top-0 left-0 h-full lg:h-auto w-64 lg:w-56 bg-white border-r border-slate-200 p-3 space-y-1 z-40 transition-transform duration-300 lg:translate-x-0 ${
+            className={`fixed lg:static top-0 left-0 h-full lg:h-auto w-64 lg:w-56 bg-white border-r border-[#E8E8E8] p-3 space-y-1 z-40 transition-transform duration-300 lg:translate-x-0 ${
               showMobileSidebar ? 'translate-x-0' : '-translate-x-full'
             }`}
             role="navigation"
@@ -333,14 +331,14 @@ export default function PromptLibrary() {
                   }}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left min-h-[44px] ${
                     isActive
-                      ? 'bg-gradient-to-r ' + c.color + ' text-white shadow-lg'
-                      : 'hover:bg-slate-100 text-slate-700'
+                      ? c.color + ' text-white shadow-lg'
+                      : 'hover:bg-gray-50 text-black'
                   }`}
                 >
                   <CIcon className="w-4 h-4 flex-shrink-0" />
-                  <span className="flex-1 font-medium text-sm">{c.label}</span>
+                  <span className="flex-1 font-light text-sm">{c.label}</span>
                   {count > 0 && (
-                    <span className={`text-xs px-1.5 py-0.5 rounded-full ${isActive ? 'bg-white/20' : 'bg-[#E91E8C]/10 text-[#E91E8C]'}`}>
+                    <span className={`text-xs px-1.5 py-0.5 rounded-full ${isActive ? 'bg-white/20' : 'bg-[#E60000]/10 text-[#E60000]'}`}>
                       {count}
                     </span>
                   )}
@@ -357,15 +355,15 @@ export default function PromptLibrary() {
             {/* Category Header */}
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center shadow-lg`}>
+                <div className={`w-10 h-10 rounded-xl ${cat.color} flex items-center justify-center shadow-lg`}>
                   <IconComponent className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-bold text-slate-800">{cat.label}</h2>
+                    <h2 className="text-xl font-light text-black">{cat.label}</h2>
                     <Tooltip content={`${cat.description} - Part of the TCWEI framework`} position="right" />
                   </div>
-                  <p className="text-sm text-slate-500">{cat.description}</p>
+                  <p className="text-sm text-[#808080]">{cat.description}</p>
                 </div>
               </div>
             </div>
@@ -380,13 +378,13 @@ export default function PromptLibrary() {
                     onClick={() => toggleItem(activeCategory, item)}
                     className={`text-left p-4 rounded-xl border-2 transition-all ${
                       isSelected
-                        ? 'border-[#E91E8C]/60 bg-[#E91E8C]/5 shadow-lg shadow-[#E91E8C]/10'
+                        ? 'border-[#E60000]/60 bg-[#E60000]/5 shadow-lg shadow-[#E60000]/10'
                         : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md'
                     }`}
                   >
                     <div className="flex items-start gap-3">
                       <div className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                        isSelected ? 'bg-[#E91E8C]' : 'bg-slate-200'
+                        isSelected ? 'bg-[#E60000]' : 'bg-slate-200'
                       }`}>
                         {isSelected ? (
                           <Check className="w-4 h-4 text-white" />
@@ -397,9 +395,9 @@ export default function PromptLibrary() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-xs font-mono text-slate-400">{item.id}</span>
-                          <h3 className="font-semibold text-slate-800">{item.title}</h3>
+                          <h3 className="font-light text-black">{item.title}</h3>
                         </div>
-                        <p className="text-sm text-slate-600 line-clamp-2">{item.prompt.substring(0, 120)}...</p>
+                        <p className="text-sm text-[#808080] line-clamp-2">{item.prompt.substring(0, 120)}...</p>
                       </div>
                     </div>
                   </button>
@@ -410,9 +408,9 @@ export default function PromptLibrary() {
 
           {/* Selected Items Panel */}
           {selectedItems.length > 0 && (
-            <aside className="hidden xl:block w-72 bg-white border-l border-slate-200 p-4 overflow-auto">
-              <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#E91E8C] text-white text-xs flex items-center justify-center">
+            <aside className="hidden xl:block w-72 bg-white border-l border-[#E8E8E8] p-4 overflow-auto">
+              <h3 className="font-light text-black mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-[#E60000] text-white text-xs flex items-center justify-center">
                   {selectedItems.length}
                 </span>
                 Selected Blocks
@@ -423,7 +421,7 @@ export default function PromptLibrary() {
                   if (items.length === 0) return null;
                   return (
                     <div key={catKey}>
-                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                      <p className="text-xs font-light text-[#808080] uppercase tracking-wider mb-1">
                         {data.categories[catKey].label}
                       </p>
                       {items.map(([key, item]) => (
@@ -477,12 +475,12 @@ export default function PromptLibrary() {
       {showOutput && mode === 'manual' && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[80vh] flex flex-col">
-            <div className="p-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="font-bold text-lg text-slate-800">Your Generated Prompt</h2>
+            <div className="p-4 border-b border-[#E8E8E8] flex items-center justify-between">
+              <h2 className="font-light text-lg text-black">Your Generated Prompt</h2>
               <div className="flex items-center gap-2">
                 <button
                   onClick={copyToClipboard}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#E91E8C] text-white rounded-lg font-medium hover:shadow-lg transition-all"
+                  className="flex items-center gap-2 px-4 py-2 bg-[#E60000] text-white rounded-lg font-light hover:shadow-lg transition-all"
                 >
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   {copied ? 'Copied!' : 'Copy'}
@@ -497,7 +495,7 @@ export default function PromptLibrary() {
             </div>
             <div className="flex-1 overflow-auto p-6">
               <div className="prose prose-slate max-w-none">
-                <div className="bg-slate-50 rounded-xl p-4 font-mono text-sm whitespace-pre-wrap leading-relaxed">
+                <div className="bg-gray-50 rounded-xl p-4 font-mono text-sm whitespace-pre-wrap leading-relaxed">
                   {generateManualPrompt().split('\n').map((line, i) => (
                     <div key={i}>{highlightPlaceholders(line) || '\u00A0'}</div>
                   ))}

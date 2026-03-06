@@ -27,13 +27,13 @@ interface QuestionCardProps {
 
 // Category color mapping matching the TCWEI categories
 const categoryColors: Record<string, string> = {
-  writer: 'bg-[#E91E8C]/10 text-[#E91E8C]',
-  task: 'bg-violet-100 text-violet-700',
-  context: 'bg-blue-100 text-blue-700',
-  examples: 'bg-amber-100 text-amber-700',
-  instructions: 'bg-emerald-100 text-emerald-700',
-  bestPractices: 'bg-rose-100 text-rose-700',
-  coding: 'bg-cyan-100 text-cyan-700',
+  writer: 'bg-[#E60000]/10 text-[#E60000]',
+  task: 'bg-[#E60000]/10 text-[#E60000]',
+  context: 'bg-gray-100 text-[#808080]',
+  examples: 'bg-gray-100 text-[#595959]',
+  instructions: 'bg-gray-100 text-black',
+  bestPractices: 'bg-[#E60000]/10 text-[#E60000]',
+  coding: 'bg-gray-100 text-[#a5a9ab]',
 };
 
 const categoryLabels: Record<string, string> = {
@@ -154,7 +154,7 @@ export default function QuestionCard({
       {/* Question header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-slate-500">
+          <span className="text-sm font-light text-[#808080]">
             Question {questionNumber} of {totalQuestions}
           </span>
           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${colorClass}`}>
@@ -164,7 +164,7 @@ export default function QuestionCard({
       </div>
 
       {/* Question text */}
-      <h3 className="text-lg font-semibold text-slate-800 mb-3 leading-snug">
+      <h3 className="text-lg font-light text-black mb-3 leading-snug">
         {question.text}
       </h3>
 
@@ -194,7 +194,7 @@ export default function QuestionCard({
                   key={option}
                   className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all ${
                     isSelected
-                      ? 'border-[#E91E8C] bg-[#E91E8C]/5'
+                      ? 'border-[#E60000] bg-[#E60000]/5'
                       : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                   }`}
                 >
@@ -202,9 +202,9 @@ export default function QuestionCard({
                     type="checkbox"
                     checked={isSelected}
                     onChange={() => toggleOption(option)}
-                    className="w-4 h-4 text-[#E91E8C] rounded focus:ring-[#E91E8C] border-slate-300"
+                    className="w-4 h-4 text-[#E60000] rounded focus:ring-[#E60000] border-slate-300"
                   />
-                  <span className="font-bold text-[#E91E8C] text-sm min-w-[1.5rem]">
+                  <span className="font-bold text-[#E60000] text-sm min-w-[1.5rem]">
                     {letter}.
                   </span>
                   <span className="text-slate-800 text-sm flex-1">{option}</span>
@@ -229,7 +229,7 @@ export default function QuestionCard({
               onKeyDown={handleKeyDown}
               onPaste={handlePaste}
               placeholder="Add any additional context or paste screenshots (Ctrl+V)..."
-              className="w-full h-20 px-4 py-3 border border-slate-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-slate-700 placeholder:text-slate-400 text-sm"
+              className="w-full h-20 px-4 py-3 border border-[#E8E8E8] rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[#E60000] focus:border-transparent text-black placeholder:text-[#a5a9ab] text-sm"
               aria-label="Additional details"
             />
           </div>
@@ -299,7 +299,7 @@ export default function QuestionCard({
 
           <button
             onClick={handleNext}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#E91E8C] text-white rounded-xl font-medium shadow-lg shadow-[#E91E8C]/25 hover:shadow-xl hover:shadow-[#E91E8C]/30 transition-all text-sm"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#E60000] text-white rounded-xl font-medium shadow-lg shadow-[#E60000]/25 hover:shadow-xl hover:shadow-[#E60000]/30 transition-all text-sm"
           >
             {isLast ? (
               <>

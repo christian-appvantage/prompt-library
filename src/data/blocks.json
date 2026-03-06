@@ -4,7 +4,7 @@
       "label": "Writer",
       "description": "Who should the AI be?",
       "icon": "User",
-      "color": "from-violet-500 to-purple-600",
+      "color": "bg-[#E60000]",
       "items": [
         { "id": "W-01", "title": "AI Strategist", "prompt": "You are a seasoned AI strategist with deep knowledge of artificial intelligence, digital transformation, and industry-specific challenges." },
         { "id": "W-02", "title": "Data Analyst", "prompt": "You are a seasoned data analyst / BI expert who interprets large data sets, uncovers trends, and supports decision makers with data-driven insights." },
@@ -28,7 +28,7 @@
       "label": "Task",
       "description": "What should the AI do?",
       "icon": "Target",
-      "color": "from-rose-500 to-pink-600",
+      "color": "bg-[#E60000]/90",
       "items": [
         { "id": "T-01", "title": "PowerPoint Summary", "prompt": "Summarize the attached presentation using a standardized structure and explicitly answer the 5Ws (What, Why, How, Who, When): [content/key messages], [challenges/problem statements], [solution approach & outcome], [rationale/justification], [milestones & decisions], [next steps]. Keep it concise, clear, and focused." },
         { "id": "T-02", "title": "PDF Summary", "prompt": "Analyze the attached PDF document and produce a structured summary. Use the 5Ws structure (What, Why, How, Who, When): [content/key messages], [challenges/problem statements], [solution approach & outcome], [rationale/justification], [milestones & decisions], [next steps]." },
@@ -58,7 +58,7 @@
       "label": "Context",
       "description": "Background & constraints",
       "icon": "FileText",
-      "color": "from-amber-500 to-orange-600",
+      "color": "bg-[#808080]",
       "items": [
         { "id": "C-01", "title": "Audience", "prompt": "The output is intended for [AUDIENCE/ROLE] and will be used for [PURPOSE]. The reader has [KNOWLEDGE LEVEL: none/basic/advanced/expert] and expects [DEPTH: high-level/operational/technical]." },
         { "id": "C-02", "title": "Domain", "prompt": "The domain context is [INDUSTRY/DOMAIN]. Particularly relevant are [VALUE CHAIN/PROCESS AREA], [CURRENT SITUATION/INITIATIVE], and the [KEY DRIVERS/PRESSURE POINTS]." },
@@ -76,7 +76,7 @@
       "label": "Examples",
       "description": "Show good/bad references",
       "icon": "BookOpen",
-      "color": "from-emerald-500 to-teal-600",
+      "color": "bg-[#595959]",
       "items": [
         { "id": "E-01", "title": "Good Example", "prompt": "Attached below is a Good Example as reference. Use it as guidance for structure, clarity, and level of detail. Follow the pattern without copying content." },
         { "id": "E-02", "title": "Bad Example", "prompt": "Attached below is a Bad Example (anti-pattern). Explicitly avoid the weaknesses shown (unclear structure, missing messages, unnecessary length)." },
@@ -89,7 +89,7 @@
       "label": "Instructions",
       "description": "Output format & style",
       "icon": "Settings",
-      "color": "from-sky-500 to-blue-600",
+      "color": "bg-black",
       "items": [
         { "id": "I-01", "title": "Length", "prompt": "Keep the output [LENGTH: very short / short / medium]. Target: [X words / X paragraphs]." },
         { "id": "I-02", "title": "Structure", "prompt": "Structure your response with clear, logical flow: Start with topic framing, extract key hypotheses/claims, outline solution paths, highlight milestones, close with open issues and next steps." },
@@ -105,7 +105,7 @@
       "label": "Best Practices",
       "description": "Guardrails & methods",
       "icon": "Shield",
-      "color": "from-indigo-500 to-violet-600",
+      "color": "bg-[#E60000]/70",
       "items": [
         { "id": "BP-01", "title": "Chain-of-Thought", "prompt": "Work in logical sequence: Read the task thoroughly, review context, plan your approach, present results in clear structure, compile into consistent output." },
         { "id": "BP-02", "title": "Clarify-First", "prompt": "If critical information is missing, first ask up to 3 precise follow-up questions. If none needed, proceed directly." },
@@ -123,7 +123,7 @@
       "label": "Coding",
       "description": "For developers",
       "icon": "Code",
-      "color": "from-slate-600 to-zinc-700",
+      "color": "bg-[#a5a9ab]",
       "items": [
         { "id": "CD-01", "title": "Code Review", "prompt": "Review the provided code for bugs, security vulnerabilities, performance issues, and adherence to best practices. Provide specific, actionable feedback with line references." },
         { "id": "CD-02", "title": "Refactor", "prompt": "Refactor the provided code to improve readability, maintainability, and performance while preserving functionality. Explain your changes." },

@@ -82,12 +82,12 @@ export default function PlaceholderForm({
   };
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 to-white rounded-xl p-6 border-2 border-[#E91E8C]/20 shadow-lg">
+    <div className="bg-white rounded-xl p-6 border-2 border-[#E60000]/20 shadow-lg">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
-          <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[#E91E8C]" />
+          <h3 className="text-lg font-light text-black flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-[#E60000]" />
             Fill in Missing Details
           </h3>
           <p className="text-sm text-slate-600 mt-1">
@@ -127,7 +127,7 @@ export default function PlaceholderForm({
         </div>
         <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-[#E91E8C] to-pink-500 transition-all duration-300 ease-out"
+            className="h-full bg-[#E60000] transition-all duration-300 ease-out"
             style={{ width: `${percentage}%` }}
           />
         </div>
@@ -143,7 +143,7 @@ export default function PlaceholderForm({
             onKeyDown={(e) => handleKeyDown(e, idx)}
           >
             {/* Label with number */}
-            <label className="block text-sm font-semibold text-slate-700">
+            <label className="block text-sm font-light text-black">
               {idx + 1}. {formatKey(ph.key)}
             </label>
 
@@ -160,9 +160,9 @@ export default function PlaceholderForm({
       </div>
 
       {/* Optional Note */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-        <p className="text-xs text-blue-800">
-          <span className="font-semibold">💡 Note:</span> All fields are optional.
+      <div className="bg-[#E60000]/5 border border-[#E60000]/20 rounded-lg p-3 mb-4">
+        <p className="text-xs text-[#595959]">
+          <span className="font-light">Note:</span> All fields are optional.
           Unfilled placeholders will remain in the prompt for later editing.
         </p>
       </div>
@@ -177,7 +177,7 @@ export default function PlaceholderForm({
         </button>
         <button
           onClick={handleSubmit}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#E91E8C] text-white rounded-lg font-medium shadow-lg shadow-[#E91E8C]/25 hover:shadow-xl hover:shadow-[#E91E8C]/30 transition-all"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#E60000] text-white rounded-lg font-medium shadow-lg shadow-[#E60000]/25 hover:shadow-xl hover:shadow-[#E60000]/30 transition-all"
         >
           <Sparkles className="w-4 h-4" />
           Apply & Finalize

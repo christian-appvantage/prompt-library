@@ -29,7 +29,7 @@ export default function Toast({ message, type = 'info', duration = 3000, onClose
   const styles = {
     success: 'bg-green-500 border-green-600',
     error: 'bg-red-500 border-red-600',
-    info: 'bg-blue-500 border-blue-600',
+    info: 'bg-[#E60000] border-[#E60000]',
   };
 
   return (

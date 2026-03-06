@@ -135,20 +135,20 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl shadow-2xl border border-white/10 w-full max-w-4xl max-h-[85vh] flex flex-col"
+        className="bg-white rounded-3xl shadow-2xl border border-[#E8E8E8] w-full max-w-4xl max-h-[85vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/10">
+        <div className="flex items-center justify-between p-6 border-b border-[#E8E8E8]">
           <div className="flex items-center gap-3">
-            <Heart className="w-6 h-6 text-pink-400 fill-current" />
-            <h2 className="text-2xl font-bold text-white">
+            <Heart className="w-6 h-6 text-[#E60000] fill-current" />
+            <h2 className="text-2xl font-light text-black">
               Favorites
-              <span className="ml-2 text-sm font-normal text-slate-400">
+              <span className="ml-2 text-sm font-light text-[#808080]">
                 ({filteredFavorites.length} {filteredFavorites.length === 1 ? 'prompt' : 'prompts'})
               </span>
             </h2>
@@ -157,7 +157,7 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
             {favorites.length > 0 && (
               <button
                 onClick={handleExportAll}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg transition-all"
+                className="flex items-center gap-2 px-4 py-2 bg-[#E60000]/10 hover:bg-[#E60000]/20 text-[#E60000] rounded-lg transition-all font-light"
                 title="Export all favorites as JSON"
               >
                 <FileDown className="w-4 h-4" />
@@ -166,7 +166,7 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
             )}
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-slate-400 hover:text-white"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-[#808080] hover:text-black"
               aria-label="Close favorites panel"
             >
               <X className="w-5 h-5" />
@@ -176,15 +176,15 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
 
         {/* Search Bar */}
         {favorites.length > 0 && (
-          <div className="p-4 border-b border-white/10">
+          <div className="p-4 border-b border-[#E8E8E8]">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#a5a9ab]" />
               <input
                 type="text"
                 placeholder="Search by name, content, or tags..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-800/50 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-[#E8E8E8] rounded-lg text-black placeholder-[#a5a9ab] focus:outline-none focus:border-[#E60000] focus:ring-2 focus:ring-[#E60000]/20 transition-all"
               />
             </div>
           </div>
@@ -194,11 +194,11 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
         <div className="flex-1 overflow-y-auto p-6">
           {filteredFavorites.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center py-12">
-              <Heart className="w-16 h-16 text-slate-600 mb-4" />
-              <h3 className="text-xl font-semibold text-slate-300 mb-2">
+              <Heart className="w-16 h-16 text-[#E8E8E8] mb-4" />
+              <h3 className="text-xl font-light text-black mb-2">
                 {searchQuery ? 'No matching favorites' : 'No favorites yet'}
               </h3>
-              <p className="text-slate-500 max-w-md">
+              <p className="text-[#808080] max-w-md font-light">
                 {searchQuery
                   ? 'Try adjusting your search query'
                   : 'Generate a prompt and click the Save button to add it to your favorites'}
@@ -209,7 +209,7 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
               {filteredFavorites.map((favorite) => (
                 <div
                   key={favorite.id}
-                  className="bg-slate-800/50 rounded-xl p-5 border border-white/10 hover:border-white/20 transition-all"
+                  className="bg-gray-50 rounded-xl p-5 border border-[#E8E8E8] hover:border-[#E60000]/30 transition-all"
                 >
                   {/* Title with inline editing */}
                   <div className="flex items-start justify-between mb-3">
@@ -224,19 +224,19 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
                               if (e.key === 'Enter') handleSaveEdit(favorite.id);
                               if (e.key === 'Escape') handleCancelEdit();
                             }}
-                            className="flex-1 px-3 py-1.5 bg-slate-900 border border-blue-500/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                            className="flex-1 px-3 py-1.5 bg-white border border-[#E60000]/50 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-[#E60000]/20"
                             autoFocus
                           />
                           <button
                             onClick={() => handleSaveEdit(favorite.id)}
-                            className="p-1.5 bg-green-500/20 hover:bg-green-500/30 text-green-400 rounded transition-colors"
+                            className="p-1.5 bg-[#E60000]/10 hover:bg-[#E60000]/20 text-[#E60000] rounded transition-colors"
                             title="Save"
                           >
                             <Check className="w-4 h-4" />
                           </button>
                           <button
                             onClick={handleCancelEdit}
-                            className="p-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded transition-colors"
+                            className="p-1.5 bg-gray-100 hover:bg-gray-200 text-[#808080] rounded transition-colors"
                             title="Cancel"
                           >
                             <X className="w-4 h-4" />
@@ -244,12 +244,12 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
                         </div>
                       ) : (
                         <div className="flex items-center gap-2">
-                          <h3 className="text-lg font-semibold text-white">
+                          <h3 className="text-lg font-light text-black">
                             {favorite.name || favorite.userIntent || 'Untitled Prompt'}
                           </h3>
                           <button
                             onClick={() => handleStartEdit(favorite)}
-                            className="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-white transition-colors"
+                            className="p-1 hover:bg-gray-200 rounded text-[#a5a9ab] hover:text-black transition-colors"
                             title="Edit name"
                           >
                             <Edit2 className="w-4 h-4" />
@@ -260,7 +260,7 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
                   </div>
 
                   {/* Metadata */}
-                  <div className="flex items-center gap-4 text-sm text-slate-400 mb-3">
+                  <div className="flex items-center gap-4 text-sm text-[#808080] mb-3">
                     <span>Created: {formatDate(favorite.createdAt)}</span>
                     <span>•</span>
                     <span>{favorite.selectedBlocks.length} blocks</span>
@@ -271,7 +271,7 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
                           {favorite.tags.map((tag, idx) => (
                             <span
                               key={idx}
-                              className="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs"
+                              className="px-2 py-0.5 bg-[#E60000]/10 text-[#E60000] rounded text-xs"
                             >
                               {tag}
                             </span>
@@ -282,7 +282,7 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
                   </div>
 
                   {/* Preview */}
-                  <p className="text-slate-300 text-sm mb-3 line-clamp-3">
+                  <p className="text-[#595959] text-sm mb-3 line-clamp-3 font-light">
                     {favorite.prompt.length > 200
                       ? favorite.prompt.substring(0, 200) + '...'
                       : favorite.prompt}
@@ -293,7 +293,7 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
                     {favorite.selectedBlocks.map((block) => (
                       <span
                         key={block.id}
-                        className="px-2 py-1 bg-slate-700/50 text-slate-300 rounded text-xs border border-white/10"
+                        className="px-2 py-1 bg-white text-[#595959] rounded text-xs border border-[#E8E8E8]"
                         title={block.categoryLabel || block.category}
                       >
                         {block.id}
@@ -305,7 +305,7 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleCopy(favorite)}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg transition-all text-sm"
+                      className="flex items-center gap-2 px-3 py-1.5 bg-[#E60000]/10 hover:bg-[#E60000]/20 text-[#E60000] rounded-lg transition-all text-sm font-light"
                     >
                       {copiedId === favorite.id ? (
                         <>
@@ -321,7 +321,7 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
                     </button>
                     <button
                       onClick={() => handleDownload(favorite)}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-green-500/20 hover:bg-green-500/30 text-green-400 rounded-lg transition-all text-sm"
+                      className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-[#595959] rounded-lg transition-all text-sm font-light"
                     >
                       {downloadedId === favorite.id ? (
                         <>
@@ -337,7 +337,7 @@ export default function FavoritesPanel({ onClose }: FavoritesPanelProps) {
                     </button>
                     <button
                       onClick={() => handleDelete(favorite.id)}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-all text-sm ml-auto"
+                      className="flex items-center gap-2 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-all text-sm font-light ml-auto"
                     >
                       <Trash2 className="w-4 h-4" />
                       Delete
