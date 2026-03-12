@@ -2,7 +2,6 @@
 
 import { useState, useRef } from 'react';
 import { Sparkles, Loader2, AlertCircle, X, Image as ImageIcon, Upload, FileText } from 'lucide-react';
-import VoiceInput from './VoiceInput';
 import { ImageAttachment, DocumentAttachment } from '@/types';
 
 interface IntentInputProps {
@@ -33,7 +32,6 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
   const [images, setImages] = useState<ImageAttachment[]>([]);
   const [documents, setDocuments] = useState<DocumentAttachment[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const docInputRef = useRef<HTMLInputElement>(null);
 
   // Sync with initialValue using derived state pattern (no effect needed)
   if (initialValue !== prevInitialValue) {
@@ -43,9 +41,6 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
     }
   }
 
-  const handleVoiceTranscript = (transcript: string) => {
-    setIntent(prev => prev ? `${prev} ${transcript}` : transcript);
-  };
 
   const handlePaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const items = e.clipboardData.items;
@@ -95,115 +90,94 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
 
-      if (!file.type.startsWith('image/')) {
-        setError('Only image files are supported');
-        setTimeout(() => setError(null), 3000);
-        continue;
-      }
+      // Check if it's an image
+      if (file.type.startsWith('image/')) {
+        // Handle image upload
+        if (file.size > 5 * 1024 * 1024) {
+          setError('Image size must be less than 5MB');
+          setTimeout(() => setError(null), 3000);
+          continue;
+        }
 
-      if (file.size > 5 * 1024 * 1024) {
-        setError('Image size must be less than 5MB');
-        setTimeout(() => setError(null), 3000);
-        continue;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const base64 = event.target?.result as string;
-        const newImage: ImageAttachment = {
-          id: `img-${Date.now()}-${i}`,
-          data: base64.split(',')[1],
-          type: file.type,
-          name: file.name,
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const base64 = event.target?.result as string;
+          const newImage: ImageAttachment = {
+            id: `img-${Date.now()}-${i}`,
+            data: base64.split(',')[1],
+            type: file.type,
+            name: file.name,
+          };
+          setImages(prev => [...prev, newImage]);
         };
-        setImages(prev => [...prev, newImage]);
-      };
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+      }
+      // Check if it's a document
+      else if (
+        file.type === 'application/pdf' ||
+        file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+        file.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      ) {
+        // Handle document upload
+        if (file.size > 10 * 1024 * 1024) {
+          setError('Document size must be less than 10MB');
+          setTimeout(() => setError(null), 4000);
+          continue;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const base64 = event.target?.result as string;
+          const docId = `doc-${Date.now()}-${i}`;
+
+          const newDocument: DocumentAttachment = {
+            id: docId,
+            data: base64.split(',')[1],
+            type: file.type,
+            name: file.name,
+          };
+
+          // Add to state immediately (shows uploading state)
+          setDocuments(prev => [...prev, newDocument]);
+
+          // Extract text
+          try {
+            const response = await fetch('/api/extract-document', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ document: newDocument }),
+            });
+
+            if (!response.ok) {
+              const { error } = await response.json();
+              throw new Error(error);
+            }
+
+            const { extractedText, metadata } = await response.json();
+
+            // Update with extracted text
+            setDocuments(prev =>
+              prev.map(d =>
+                d.id === docId ? { ...d, extractedText, metadata } : d
+              )
+            );
+          } catch (err: any) {
+            setError(err.message || 'Failed to extract document text');
+            setTimeout(() => setError(null), 4000);
+            // Remove failed document
+            setDocuments(prev => prev.filter(d => d.id !== docId));
+          }
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setError('Unsupported file type. Please upload images (PNG, JPG, GIF, WebP) or documents (PDF, DOCX, PPTX)');
+        setTimeout(() => setError(null), 4000);
+      }
     }
 
     // Reset input so same file can be uploaded again
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
-    }
-  };
-
-  const handleDocumentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-
-      // Validate file type
-      const validTypes = [
-        'application/pdf',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      ];
-
-      if (!validTypes.includes(file.type)) {
-        setError('Only PDF, Word (.docx), and PowerPoint (.pptx) files are supported');
-        setTimeout(() => setError(null), 4000);
-        continue;
-      }
-
-      // Validate file size (10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        setError('Document size must be less than 10MB');
-        setTimeout(() => setError(null), 4000);
-        continue;
-      }
-
-      // Convert to base64
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        const base64 = event.target?.result as string;
-        const docId = `doc-${Date.now()}-${i}`;
-
-        const newDocument: DocumentAttachment = {
-          id: docId,
-          data: base64.split(',')[1],
-          type: file.type,
-          name: file.name,
-        };
-
-        // Add to state immediately (shows uploading state)
-        setDocuments(prev => [...prev, newDocument]);
-
-        // Extract text
-        try {
-          const response = await fetch('/api/extract-document', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ document: newDocument }),
-          });
-
-          if (!response.ok) {
-            const { error } = await response.json();
-            throw new Error(error);
-          }
-
-          const { extractedText, metadata } = await response.json();
-
-          // Update with extracted text
-          setDocuments(prev =>
-            prev.map(d =>
-              d.id === docId ? { ...d, extractedText, metadata } : d
-            )
-          );
-        } catch (err: any) {
-          setError(err.message || 'Failed to extract document text');
-          setTimeout(() => setError(null), 4000);
-          // Remove failed document
-          setDocuments(prev => prev.filter(d => d.id !== docId));
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // Reset input
-    if (docInputRef.current) {
-      docInputRef.current.value = '';
     }
   };
 
@@ -264,26 +238,14 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
         </div>
 
         <div className="flex flex-col gap-2">
-          <VoiceInput onTranscript={handleVoiceTranscript} disabled={isLoading} />
-
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={isLoading}
             className="w-12 h-12 rounded-xl border-2 border-[#E8E8E8] hover:border-[#E60000] hover:bg-[#E60000]/5 transition-all flex items-center justify-center group"
-            aria-label="Upload screenshot or image"
-            title="Upload screenshot or image"
+            aria-label="Upload files (images or documents)"
+            title="Upload images (PNG, JPG, GIF, WebP) or documents (PDF, DOCX, PPTX)"
           >
             <Upload className="w-5 h-5 text-[#a5a9ab] group-hover:text-[#E60000]" />
-          </button>
-
-          <button
-            onClick={() => docInputRef.current?.click()}
-            disabled={isLoading}
-            className="w-12 h-12 rounded-xl border-2 border-[#E8E8E8] hover:border-[#E60000] hover:bg-[#E60000]/5 transition-all flex items-center justify-center group"
-            aria-label="Upload document (PDF, Word, PowerPoint)"
-            title="Upload document (PDF, Word, PowerPoint). Max 10MB."
-          >
-            <FileText className="w-5 h-5 text-[#a5a9ab] group-hover:text-[#E60000]" />
           </button>
 
           <button
@@ -300,24 +262,15 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
           </button>
         </div>
 
-        {/* Hidden file inputs */}
+        {/* Hidden file input */}
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*"
+          accept="image/*,.pdf,.docx,.pptx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation"
           multiple
           onChange={handleFileUpload}
           className="hidden"
-          aria-label="File input for images"
-        />
-        <input
-          ref={docInputRef}
-          type="file"
-          accept=".pdf,.docx,.pptx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation"
-          multiple
-          onChange={handleDocumentUpload}
-          className="hidden"
-          aria-label="File input for documents"
+          aria-label="File input for images and documents"
         />
       </div>
 
@@ -420,7 +373,7 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
 
       <div className="mt-8 pt-4 border-t border-slate-100">
         <p className="text-xs text-slate-400 text-center">
-          Press <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-slate-500 font-mono">Enter</kbd> to continue or <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-slate-500 font-mono">Shift+Enter</kbd> for new line
+          Press <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-slate-500 font-mono">Enter</kbd> to submit or <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-slate-500 font-mono">Shift+Enter</kbd> for new line
           <span className="mx-2">•</span>
           <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-slate-500 font-mono">Ctrl+V</kbd> to paste images
         </p>
