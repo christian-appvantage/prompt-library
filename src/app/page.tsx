@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Sparkles, Copy, Check, Plus, X, User, Target, FileText, BookOpen, Settings, Shield, Code, Menu, Heart } from 'lucide-react';
+import { Sparkles, Copy, Check, Plus, X, User, Target, FileText, BookOpen, Settings, Shield, Code, Menu, Heart, Eye } from 'lucide-react';
 import GuidedFlow from '@/components/GuidedFlow';
 import PromptOutput from '@/components/PromptOutput';
 import FavoritesPanel from '@/components/FavoritesPanel';
 import TCWEIIntroModal from '@/components/TCWEIIntroModal';
 import Tooltip from '@/components/Tooltip';
 import TCWEIHelpPanel from '@/components/TCWEIHelpPanel';
+import BlockViewModal from '@/components/BlockViewModal';
 import { useKeyboardShortcuts, useEscapeKey } from '@/hooks/useKeyboardShortcuts';
 import { getFavoritesCount } from '@/utils/favoritesManager';
 import blocksData from '@/data/blocks.json';
@@ -39,6 +40,9 @@ export default function PromptLibrary() {
   // Favorites state
   const [showFavorites, setShowFavorites] = useState(false);
   const [favoritesCount, setFavoritesCount] = useState(0);
+
+  // Block viewer state
+  const [viewingBlock, setViewingBlock] = useState<Block | null>(null);
 
   // Check if user has seen intro modal
   useEffect(() => {
@@ -373,34 +377,49 @@ export default function PromptLibrary() {
               {cat.items.map(item => {
                 const isSelected = selected[`${activeCategory}-${item.id}`];
                 return (
-                  <button
-                    key={item.id}
-                    onClick={() => toggleItem(activeCategory, item)}
-                    className={`text-left p-4 rounded-xl border-2 transition-all ${
-                      isSelected
-                        ? 'border-[#E60000]/60 bg-[#E60000]/5 shadow-lg shadow-[#E60000]/10'
-                        : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                        isSelected ? 'bg-[#E60000]' : 'bg-slate-200'
-                      }`}>
-                        {isSelected ? (
-                          <Check className="w-4 h-4 text-white" />
-                        ) : (
-                          <Plus className="w-4 h-4 text-slate-500" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-mono text-slate-400">{item.id}</span>
-                          <h3 className="font-light text-black">{item.title}</h3>
+                  <div key={item.id} className="flex items-start gap-2">
+                    {/* Selection button */}
+                    <button
+                      onClick={() => toggleItem(activeCategory, item)}
+                      className={`flex-1 text-left p-4 rounded-xl border-2 transition-all ${
+                        isSelected
+                          ? 'border-[#E60000]/60 bg-[#E60000]/5 shadow-lg shadow-[#E60000]/10'
+                          : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                          isSelected ? 'bg-[#E60000]' : 'bg-slate-200'
+                        }`}>
+                          {isSelected ? (
+                            <Check className="w-4 h-4 text-white" />
+                          ) : (
+                            <Plus className="w-4 h-4 text-slate-500" />
+                          )}
                         </div>
-                        <p className="text-sm text-[#808080] line-clamp-2">{item.prompt.substring(0, 120)}...</p>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs font-mono text-slate-400">{item.id}</span>
+                            <h3 className="font-light text-black">{item.title}</h3>
+                          </div>
+                          <p className="text-sm text-[#808080] line-clamp-2">{item.prompt.substring(0, 120)}...</p>
+                        </div>
                       </div>
-                    </div>
-                  </button>
+                    </button>
+
+                    {/* View button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setViewingBlock(item);
+                      }}
+                      className="p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-[#E60000] hover:bg-[#E60000]/5 transition-all"
+                      aria-label="View full content"
+                      title="View full block content"
+                    >
+                      <Eye className="w-5 h-5 text-slate-400" />
+                    </button>
+                  </div>
                 );
               })}
             </div>
@@ -510,6 +529,20 @@ export default function PromptLibrary() {
           </div>
         </div>
       )}
+
+      {/* Block View Modal */}
+      <BlockViewModal
+        block={viewingBlock}
+        isOpen={!!viewingBlock}
+        onClose={() => setViewingBlock(null)}
+        onToggleSelection={() => {
+          if (viewingBlock) {
+            toggleItem(activeCategory, viewingBlock);
+          }
+        }}
+        isSelected={viewingBlock ? !!selected[`${activeCategory}-${viewingBlock.id}`] : false}
+        categoryLabel={data.categories[activeCategory]?.label}
+      />
     </div>
   );
 }
