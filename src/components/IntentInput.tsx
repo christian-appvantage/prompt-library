@@ -269,7 +269,21 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={isLoading}
-            className="w-full h-24 px-4 py-3 border border-[#E8E8E8] rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[#E60000] focus:border-transparent text-black placeholder:text-[#a5a9ab]"
+            className="w-12 h-12 rounded-xl border-2 border-[#E8E8E8] hover:border-[#E60000] hover:bg-[#E60000]/5 transition-all flex items-center justify-center group"
+            aria-label="Upload screenshot or image"
+            title="Upload screenshot or image"
+          >
+            <Upload className="w-5 h-5 text-[#a5a9ab] group-hover:text-[#E60000]" />
+          </button>
+
+          <button
+            onClick={() => docInputRef.current?.click()}
+            disabled={isLoading}
+            className="w-12 h-12 rounded-xl border-2 border-[#E8E8E8] hover:border-[#E60000] hover:bg-[#E60000]/5 transition-all flex items-center justify-center group"
+            aria-label="Upload document (PDF, Word, PowerPoint)"
+            title="Upload document (PDF, Word, PowerPoint). Max 10MB."
+          >
+            <FileText className="w-5 h-5 text-[#a5a9ab] group-hover:text-[#E60000]" />
           </button>
 
           <button
