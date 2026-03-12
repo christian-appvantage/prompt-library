@@ -6,7 +6,7 @@ import IntentInput from './IntentInput';
 import StepIndicator from './StepIndicator';
 import QuestionCard from './QuestionCard';
 import EvaluatingSpinner from './EvaluatingSpinner';
-import type { FlowStep, ClarifyingQuestion, ClarifyingAnswer } from '@/types';
+import type { FlowStep, ClarifyingQuestion, ClarifyingAnswer, ImageAttachment, DocumentAttachment } from '@/types';
 
 interface GuidedFlowProps {
   onComplete: (
@@ -32,7 +32,8 @@ export default function GuidedFlow({ onComplete }: GuidedFlowProps) {
   // Flow state
   const [step, setStep] = useState<FlowStep>('input');
   const [userIntent, setUserIntent] = useState('');
-  const [userImages, setUserImages] = useState<Array<{ id: string; data: string; type: string; name: string }>>([]);
+  const [userImages, setUserImages] = useState<ImageAttachment[]>([]);
+  const [userDocuments, setUserDocuments] = useState<DocumentAttachment[]>([]);
   const [clarifyingQuestions, setClarifyingQuestions] = useState<ClarifyingQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -47,7 +48,7 @@ export default function GuidedFlow({ onComplete }: GuidedFlowProps) {
 
   // === CORE API FUNCTIONS (not useCallback to avoid circular deps) ===
 
-  const generatePrompt = async (intent: string, clarifyingAnswers: ClarifyingAnswer[], images?: Array<{ id: string; data: string; type: string; name: string }>) => {
+  const generatePrompt = async (intent: string, clarifyingAnswers: ClarifyingAnswer[], images?: ImageAttachment[], documents?: DocumentAttachment[]) => {
     setStep('generating');
     setError(null);
 
@@ -64,6 +65,7 @@ export default function GuidedFlow({ onComplete }: GuidedFlowProps) {
             userIntent: intent,
             clarifyingAnswers: clarifyingAnswers.length > 0 ? clarifyingAnswers : undefined,
             images: images && images.length > 0 ? images : undefined,
+            documents: documents && documents.length > 0 ? documents : undefined,
           }),
           signal: controller.signal,
         }),
@@ -97,9 +99,10 @@ export default function GuidedFlow({ onComplete }: GuidedFlowProps) {
 
   // === STEP HANDLERS ===
 
-  const handleIntentSubmit = async (intent: string, images?: Array<{ id: string; data: string; type: string; name: string }>) => {
+  const handleIntentSubmit = async (intent: string, images?: ImageAttachment[], documents?: DocumentAttachment[]) => {
     setUserIntent(intent);
     setUserImages(images || []);
+    setUserDocuments(documents || []);
     previousIntentRef.current = intent;
     setError(null);
     setStep('evaluating');
@@ -112,6 +115,7 @@ export default function GuidedFlow({ onComplete }: GuidedFlowProps) {
           body: JSON.stringify({
             userIntent: intent,
             images: images && images.length > 0 ? images : undefined,
+            documents: documents && documents.length > 0 ? documents : undefined,
           }),
         })
       );
@@ -124,7 +128,7 @@ export default function GuidedFlow({ onComplete }: GuidedFlowProps) {
 
       if (data.sufficient) {
         // Context is sufficient - skip to generating
-        await generatePrompt(intent, [], images);
+        await generatePrompt(intent, [], images, documents);
       } else {
         // Context is insufficient - show clarifying questions
         setClarifyingQuestions(data.questions || []);
@@ -153,7 +157,7 @@ export default function GuidedFlow({ onComplete }: GuidedFlowProps) {
         answer: answers[idx] || '',
       })).filter(a => a.answer.trim() !== '');
 
-      generatePrompt(userIntent, allAnswers, userImages);
+      generatePrompt(userIntent, allAnswers, userImages, userDocuments);
     }
   };
 
@@ -169,12 +173,13 @@ export default function GuidedFlow({ onComplete }: GuidedFlowProps) {
       answer: answers[idx] || '',
     })).filter(a => a.answer.trim() !== '');
 
-    generatePrompt(userIntent, partialAnswers, userImages);
+    generatePrompt(userIntent, partialAnswers, userImages, userDocuments);
   };
 
   const handleStartOver = useCallback(() => {
     setStep('input');
     setUserImages([]);
+    setUserDocuments([]);
     setClarifyingQuestions([]);
     setCurrentQuestionIndex(0);
     setAnswers({});

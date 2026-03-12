@@ -55,7 +55,7 @@ CRITICAL: The "questions" array must ONLY be present when "sufficient" is false.
 
 export async function POST(request: NextRequest) {
   try {
-    const { userIntent, images } = await request.json();
+    const { userIntent, images, documents } = await request.json();
 
     if (!userIntent || typeof userIntent !== 'string') {
       return NextResponse.json(
@@ -77,6 +77,28 @@ export async function POST(request: NextRequest) {
 
     // Build message content - support multi-modal if images present
     const hasImages = Array.isArray(images) && images.length > 0;
+    const hasDocuments = Array.isArray(documents) && documents.length > 0;
+
+    // Build text portion with documents if present
+    let textContent = `User request: "${userIntent}"`;
+
+    if (hasDocuments) {
+      textContent += `\n\nAttached documents (${documents.length}):\n`;
+      documents.forEach((doc: { name: string; extractedText?: string; metadata?: any }, idx: number) => {
+        textContent += `\n--- Document ${idx + 1}: ${doc.name} ---\n`;
+        if (doc.metadata) {
+          textContent += `[${doc.metadata.wordCount || 0} words`;
+          if (doc.metadata.pageCount) {
+            textContent += `, ${doc.metadata.pageCount} pages`;
+          }
+          textContent += `]\n\n`;
+        }
+        textContent += doc.extractedText || '[No text extracted]';
+        textContent += `\n--- End of ${doc.name} ---\n`;
+      });
+    }
+
+    textContent += `\n\nPlease evaluate whether this request${hasImages ? ' (including any attached screenshots)' : ''}${hasDocuments ? ' (including the attached documents)' : ''} contains enough context to generate a high-quality prompt. Return your response as valid JSON.`;
 
     const messageContent: Anthropic.MessageParam['content'] = hasImages
       ? [
@@ -90,14 +112,10 @@ export async function POST(request: NextRequest) {
           })),
           {
             type: 'text' as const,
-            text: `User request: "${userIntent}"
-
-Please evaluate whether this request (including any attached screenshots) contains enough context to generate a high-quality prompt. Return your response as valid JSON.`,
+            text: textContent,
           },
         ]
-      : `User request: "${userIntent}"
-
-Please evaluate whether this request contains enough context to generate a high-quality prompt. Return your response as valid JSON.`;
+      : textContent;
 
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6',

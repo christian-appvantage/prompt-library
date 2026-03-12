@@ -68,7 +68,7 @@ EXAMPLE STRUCTURE:
 
 export async function POST(request: NextRequest) {
   try {
-    const { userIntent, clarifyingAnswers, images } = await request.json();
+    const { userIntent, clarifyingAnswers, images, documents } = await request.json();
 
     if (!userIntent || typeof userIntent !== 'string') {
       return NextResponse.json(
@@ -96,17 +96,36 @@ export async function POST(request: NextRequest) {
 
     // Build message content - support multi-modal if images present
     const hasImages = Array.isArray(images) && images.length > 0;
+    const hasDocuments = Array.isArray(documents) && documents.length > 0;
+
+    // Build document context if present
+    let documentContext = '';
+    if (hasDocuments) {
+      documentContext = `\n\nAttached documents (${documents.length}):\n`;
+      documents.forEach((doc: { name: string; extractedText?: string; metadata?: any }, idx: number) => {
+        documentContext += `\n--- Document ${idx + 1}: ${doc.name} ---\n`;
+        if (doc.metadata) {
+          documentContext += `[${doc.metadata.wordCount || 0} words`;
+          if (doc.metadata.pageCount) {
+            documentContext += `, ${doc.metadata.pageCount} pages`;
+          }
+          documentContext += `]\n\n`;
+        }
+        documentContext += doc.extractedText || '[No text extracted]';
+        documentContext += `\n--- End of ${doc.name} ---\n`;
+      });
+    }
 
     const textContent = clarifyingAnswers?.length
       ? `User request: "${userIntent}"
 
 Additional context gathered from follow-up questions:
-${clarifyingAnswers.map((qa: { question: string; answer: string }) => `Q: ${qa.question}\nA: ${qa.answer}`).join('\n\n')}
+${clarifyingAnswers.map((qa: { question: string; answer: string }) => `Q: ${qa.question}\nA: ${qa.answer}`).join('\n\n')}${documentContext}
 
-Please analyze this request with all the provided context${hasImages ? ' and attached screenshots' : ''} and generate an appropriate prompt using the TCWEI building blocks. Return your response as valid JSON.`
-      : `User request: "${userIntent}"
+Please analyze this request with all the provided context${hasImages ? ', attached screenshots,' : ''}${hasDocuments ? ' and attached documents' : ''} and generate an appropriate prompt using the TCWEI building blocks. Use the document content to fill in placeholders and provide specific context. Return your response as valid JSON.`
+      : `User request: "${userIntent}"${documentContext}
 
-Please analyze this request${hasImages ? ' and attached screenshots' : ''} and generate an appropriate prompt using the TCWEI building blocks. Return your response as valid JSON.`;
+Please analyze this request${hasImages ? ', attached screenshots,' : ''}${hasDocuments ? ' and attached documents' : ''} and generate an appropriate prompt using the TCWEI building blocks. Use the document content to fill in placeholders and provide specific context. Return your response as valid JSON.`;
 
     const messageContent: Anthropic.MessageParam['content'] = hasImages
       ? [

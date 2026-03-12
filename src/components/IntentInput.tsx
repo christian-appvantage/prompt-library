@@ -1,18 +1,12 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Sparkles, Loader2, AlertCircle, X, Image as ImageIcon, Upload } from 'lucide-react';
+import { Sparkles, Loader2, AlertCircle, X, Image as ImageIcon, Upload, FileText } from 'lucide-react';
 import VoiceInput from './VoiceInput';
-
-interface ImageAttachment {
-  id: string;
-  data: string;
-  type: string;
-  name: string;
-}
+import { ImageAttachment, DocumentAttachment } from '@/types';
 
 interface IntentInputProps {
-  onSubmit: (intent: string, images?: ImageAttachment[]) => void;
+  onSubmit: (intent: string, images?: ImageAttachment[], documents?: DocumentAttachment[]) => void;
   isLoading?: boolean;
   initialValue?: string;
 }
@@ -37,7 +31,9 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
   const [error, setError] = useState<string | null>(null);
   const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
   const [images, setImages] = useState<ImageAttachment[]>([]);
+  const [documents, setDocuments] = useState<DocumentAttachment[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const docInputRef = useRef<HTMLInputElement>(null);
 
   // Sync with initialValue using derived state pattern (no effect needed)
   if (initialValue !== prevInitialValue) {
@@ -131,13 +127,101 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
     }
   };
 
+  const handleDocumentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      // Validate file type
+      const validTypes = [
+        'application/pdf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      ];
+
+      if (!validTypes.includes(file.type)) {
+        setError('Only PDF, Word (.docx), and PowerPoint (.pptx) files are supported');
+        setTimeout(() => setError(null), 4000);
+        continue;
+      }
+
+      // Validate file size (10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        setError('Document size must be less than 10MB');
+        setTimeout(() => setError(null), 4000);
+        continue;
+      }
+
+      // Convert to base64
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const base64 = event.target?.result as string;
+        const docId = `doc-${Date.now()}-${i}`;
+
+        const newDocument: DocumentAttachment = {
+          id: docId,
+          data: base64.split(',')[1],
+          type: file.type,
+          name: file.name,
+        };
+
+        // Add to state immediately (shows uploading state)
+        setDocuments(prev => [...prev, newDocument]);
+
+        // Extract text
+        try {
+          const response = await fetch('/api/extract-document', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ document: newDocument }),
+          });
+
+          if (!response.ok) {
+            const { error } = await response.json();
+            throw new Error(error);
+          }
+
+          const { extractedText, metadata } = await response.json();
+
+          // Update with extracted text
+          setDocuments(prev =>
+            prev.map(d =>
+              d.id === docId ? { ...d, extractedText, metadata } : d
+            )
+          );
+        } catch (err: any) {
+          setError(err.message || 'Failed to extract document text');
+          setTimeout(() => setError(null), 4000);
+          // Remove failed document
+          setDocuments(prev => prev.filter(d => d.id !== docId));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Reset input
+    if (docInputRef.current) {
+      docInputRef.current.value = '';
+    }
+  };
+
+  const removeDocument = (id: string) => {
+    setDocuments(prev => prev.filter(doc => doc.id !== id));
+  };
+
   const handleSubmit = () => {
     if (!intent.trim()) {
       setError('Please describe what you want to accomplish');
       return;
     }
     setError(null);
-    onSubmit(intent.trim(), images.length > 0 ? images : undefined);
+    onSubmit(
+      intent.trim(),
+      images.length > 0 ? images : undefined,
+      documents.length > 0 ? documents : undefined
+    );
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -185,11 +269,7 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={isLoading}
-            className="w-12 h-12 rounded-xl border-2 border-[#E8E8E8] hover:border-[#E60000] hover:bg-[#E60000]/5 transition-all flex items-center justify-center group"
-            aria-label="Upload screenshot or image"
-            title="Upload screenshot or image"
-          >
-            <Upload className="w-5 h-5 text-[#a5a9ab] group-hover:text-[#E60000]" />
+            className="w-full h-24 px-4 py-3 border border-[#E8E8E8] rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[#E60000] focus:border-transparent text-black placeholder:text-[#a5a9ab]"
           </button>
 
           <button
@@ -206,7 +286,7 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
           </button>
         </div>
 
-        {/* Hidden file input */}
+        {/* Hidden file inputs */}
         <input
           ref={fileInputRef}
           type="file"
@@ -215,6 +295,15 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
           onChange={handleFileUpload}
           className="hidden"
           aria-label="File input for images"
+        />
+        <input
+          ref={docInputRef}
+          type="file"
+          accept=".pdf,.docx,.pptx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+          multiple
+          onChange={handleDocumentUpload}
+          className="hidden"
+          aria-label="File input for documents"
         />
       </div>
 
@@ -251,13 +340,63 @@ export default function IntentInput({ onSubmit, isLoading = false, initialValue 
         </div>
       )}
 
+      {/* Document previews */}
+      {documents.length > 0 && (
+        <div className="mt-4">
+          <div className="flex items-center gap-2 mb-2">
+            <FileText className="w-4 h-4 text-slate-600" />
+            <span className="text-sm font-medium text-slate-700">Attached Documents ({documents.length})</span>
+          </div>
+          <div className="space-y-2">
+            {documents.map((doc) => (
+              <div key={doc.id} className="flex items-center gap-3 p-3 border-2 border-slate-200 rounded-lg">
+                <div className="flex-shrink-0">
+                  {doc.type.includes('pdf') && <FileText className="w-6 h-6 text-red-500" />}
+                  {doc.type.includes('word') && <FileText className="w-6 h-6 text-blue-500" />}
+                  {doc.type.includes('presentation') && <FileText className="w-6 h-6 text-orange-500" />}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-slate-800 truncate">{doc.name}</p>
+                  {doc.extractedText ? (
+                    <p className="text-xs text-green-600">
+                      ✓ Extracted {doc.metadata?.wordCount || 0} words
+                      {doc.metadata?.pageCount && ` (${doc.metadata.pageCount} pages)`}
+                    </p>
+                  ) : (
+                    <p className="text-xs text-slate-500 flex items-center gap-1">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      Extracting text...
+                    </p>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => removeDocument(doc.id)}
+                  className="flex-shrink-0 w-6 h-6 bg-pink-600 hover:bg-pink-700 text-white rounded-full flex items-center justify-center"
+                  aria-label="Remove document"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {documents.some(d => d.metadata?.truncated) && (
+            <p className="text-xs text-amber-600 mt-2">
+              ⚠️ Some documents were truncated to 50,000 characters due to size limits.
+            </p>
+          )}
+        </div>
+      )}
+
       {!intent.trim() && !isLoading && (
         <div className="flex flex-wrap gap-2 mt-4">
           {EXAMPLE_INTENTS.map((example) => (
             <button
               key={example.label}
               onClick={() => setIntent(example.text)}
-              className="border border-slate-200 rounded-full px-3 py-1.5 text-sm text-slate-600 hover:border-[#E60000] hover:text-[#E60000] transition-colors"
+            className="w-full h-24 px-4 py-3 border border-[#E8E8E8] rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[#E60000] focus:border-transparent text-black placeholder:text-[#a5a9ab]"
             >
               {example.label}
             </button>

@@ -28,9 +28,33 @@ export interface SelectedBlock extends Block {
   category: string;
 }
 
+// Attachment types
+export interface ImageAttachment {
+  id: string;
+  data: string;
+  type: string;
+  name: string;
+}
+
+export interface DocumentAttachment {
+  id: string;                // Unique ID (e.g., 'doc-1234567890-0')
+  data: string;              // Base64 original file
+  type: string;              // MIME type
+  name: string;              // Filename
+  extractedText?: string;    // Set after extraction
+  metadata?: {
+    pageCount?: number;      // PDF only
+    wordCount: number;
+    charCount: number;
+    truncated: boolean;      // If >50k chars
+  };
+}
+
 // API Request/Response types
 export interface GeneratePromptRequest {
   userIntent: string;
+  images?: ImageAttachment[];
+  documents?: DocumentAttachment[];
 }
 
 export interface GeneratePromptResponse {
@@ -63,6 +87,8 @@ export interface ClarifyingQuestion {
 
 export interface EvaluateContextRequest {
   userIntent: string;
+  images?: ImageAttachment[];
+  documents?: DocumentAttachment[];
 }
 
 export interface EvaluateContextResponse {
@@ -78,6 +104,8 @@ export interface ClarifyingAnswer {
 
 export interface GeneratePromptRequestV2 extends GeneratePromptRequest {
   clarifyingAnswers?: ClarifyingAnswer[];
+  images?: ImageAttachment[];
+  documents?: DocumentAttachment[];
 }
 
 // Favorites feature types
